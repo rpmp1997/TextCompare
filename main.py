@@ -20,11 +20,13 @@ def alertBox():
 def compareData():
     leftText = containerLeft.get(1.0, END)
     rightText = containerRight.get(1.0, END)
+    difference = [""]
     if leftText != '' and rightText != '':
-        if leftText == rightText:
-            messagebox.showinfo("Title", "Text is equal")
-        else:
-            messagebox.showinfo("Title", "Text is not equal")
+        for i in range(len(leftText)):
+            if leftText[i] != rightText[i]:
+                difference = difference + leftText[i]
+        messagebox.showinfo("Title", difference)
+
     else:
         messagebox.showinfo('Title', "One of the fields is blank")
 
