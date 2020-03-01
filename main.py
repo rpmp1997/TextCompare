@@ -20,11 +20,11 @@ def alertBox():
 def compareData():
     leftText = containerLeft.get(1.0, END)
     rightText = containerRight.get(1.0, END)
-    difference = [""]
+    difference = []
     if leftText != '' and rightText != '':
         for i in range(len(leftText)):
             if leftText[i] != rightText[i]:
-                difference = difference + leftText[i]
+                difference.append(leftText[i])
         messagebox.showinfo("Title", difference)
 
     else:
