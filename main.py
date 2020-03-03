@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import tkinter.scrolledtext as ScrolledText
+import re
 
 global leftText, rightText
 
@@ -15,17 +16,25 @@ class mainRoot(Tk):
 ################ METHODS ################
 
 def alertBox():
-    messagebox.showinfo("Title", "Message")
+    messagebox.showinfo("Title", str(type(containerRight.get(1.0, END))))
 
 def compareData():
     leftText = containerLeft.get(1.0, END)
     rightText = containerRight.get(1.0, END)
-    difference = []
+
     if leftText != '' and rightText != '':
-        for i in range(len(leftText)):
-            if leftText[i] != rightText[i]:
-                difference.append(leftText[i])
-        messagebox.showinfo("Title", difference)
+        leftSplitSentences = leftText.splitlines(keepends=True)
+        rightSplitSentences = rightText.splitlines(keepends=True)
+        minlen = len(leftSplitSentences) if len(rightSplitSentences) > len(leftSplitSentences) else len(rightSplitSentences)
+        for i in range(minlen):
+            tempLeft = leftSplitSentences[i]
+            tempRight = rightSplitSentences[i]
+            if tempLeft != tempRight:
+
+
+        # containerRight.tag_add("rightColor", "1."+str(i))
+        # containerRight.tag_config("rightColor", foreground='red')
+        # messagebox.showinfo("Title", rightText)
 
     else:
         messagebox.showinfo('Title', "One of the fields is blank")
