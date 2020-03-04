@@ -19,41 +19,44 @@ class mainRoot(Tk):
 def alertBox():
     messagebox.showinfo("Title", str(type(containerRight.get(1.0, END))))
 
-def show_diff(text, n_text):
-   seqm = difflib.SequenceMatcher(None, text, n_text)
-   output = []
-   for opcode, a0, a1, b0, b1 in seqm.get_opcodes():
-      if opcode == 'equal':
-         output.append(seqm.a[a0:a1])
-      elif opcode == 'insert':
-         output.append("<font color=red>^" + seqm.b[b0:b1] + "</font>")
-      elif opcode == 'delete':
-         output.append("<font color=blue>^" + seqm.a[a0:a1] + "</font>")
-      elif opcode == 'replace':
-         output.append("<font color=green>^" + seqm.b[b0:b1] + "</font>")
-      else:
-         continue
-   return ''.join(output)
 
 def compareData():
     leftText = containerLeft.get(1.0, END)
     rightText = containerRight.get(1.0, END)
 
-    if leftText != '' and rightText != '':
-        leftSplitSentences = leftText.splitlines(keepends=True)
-        rightSplitSentences = rightText.splitlines(keepends=True)
-        minlen = len(leftSplitSentences) if len(rightSplitSentences) > len(leftSplitSentences) else len(rightSplitSentences)
-        for i in range(minlen):
-            tempLeft = leftSplitSentences[i]
-            tempRight = rightSplitSentences[i]
-            if tempLeft != tempRight:
-                for k in range(len(tempRight)):
-                    if(tempLeft[k] != tempRight[k]):
-                        containerRight.tag_add("rightColor", str(i+1)+"."+str(k))
-                        containerRight.tag_config("rightColor", foreground='red')
-                        containerLeft.tag_add("leftColor", str(i+1)+"."+str(k))
-                        containerLeft.tag_config("leftColor", foreground='green')
+    if rightText != '' and leftText != '':
+        leftTextList = leftText.split("\n")
+        rightTextList = rightText.split("\n")
 
+        leftSet = set(leftTextList)
+        rightSet = set(rightTextList)
+
+        leftAdded = leftSet - rightSet
+        leftRemoved = rightSet - leftSet
+
+        countLeftNew = 0
+        countLeftOld = 0
+        countRightNew = 0
+        countRightOld = 0
+
+        for line in leftTextList:
+            if line in leftAdded:
+                print("-" +line.strip())
+            elif line in leftRemoved:
+                print("+" +line.strip())
+
+        for line in rightTextList:
+            countRightNew += 1
+            countRightOld += 1
+            if line in leftAdded:
+                print("-" + line.strip())
+                containerRight.tag_add("rightColor", '3.0', '3.99')
+                containerRight.tag_config("rightColor", background='red')
+
+            elif line in leftRemoved:
+                print("+" +line.strip())
+                containerRight.tag_add("rightColor", str(countRightNew)+'.0', str(countRightNew)+'.999')
+                containerRight.tag_config("rightColor", background='red')
     else:
         messagebox.showinfo('Title', "One of the fields is blank")
 
@@ -72,7 +75,7 @@ fileMenu.add_command(label="Run", command=alertBox)
 fileMenu.add_command(label="Compare", command=compareData)
 
 
-#Settings for frames and containers
+#Settings gor frames and containers
 left = Frame(main, borderwidth=2, relief="solid", background="#4D4D4D")
 right = Frame(main, borderwidth=2, relief="solid", background="#4D4D4D")
 containerLeft = ScrolledText.ScrolledText(left, borderwidth=2, relief="solid", width=50)
