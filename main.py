@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import tkinter.scrolledtext as ScrolledText
 import re
+import difflib
 
 global leftText, rightText
 
@@ -18,6 +19,22 @@ class mainRoot(Tk):
 def alertBox():
     messagebox.showinfo("Title", str(type(containerRight.get(1.0, END))))
 
+def show_diff(text, n_text):
+   seqm = difflib.SequenceMatcher(None, text, n_text)
+   output = []
+   for opcode, a0, a1, b0, b1 in seqm.get_opcodes():
+      if opcode == 'equal':
+         output.append(seqm.a[a0:a1])
+      elif opcode == 'insert':
+         output.append("<font color=red>^" + seqm.b[b0:b1] + "</font>")
+      elif opcode == 'delete':
+         output.append("<font color=blue>^" + seqm.a[a0:a1] + "</font>")
+      elif opcode == 'replace':
+         output.append("<font color=green>^" + seqm.b[b0:b1] + "</font>")
+      else:
+         continue
+   return ''.join(output)
+
 def compareData():
     leftText = containerLeft.get(1.0, END)
     rightText = containerRight.get(1.0, END)
@@ -30,11 +47,12 @@ def compareData():
             tempLeft = leftSplitSentences[i]
             tempRight = rightSplitSentences[i]
             if tempLeft != tempRight:
-
-
-        # containerRight.tag_add("rightColor", "1."+str(i))
-        # containerRight.tag_config("rightColor", foreground='red')
-        # messagebox.showinfo("Title", rightText)
+                for k in range(len(tempRight)):
+                    if(tempLeft[k] != tempRight[k]):
+                        containerRight.tag_add("rightColor", str(i+1)+"."+str(k))
+                        containerRight.tag_config("rightColor", foreground='red')
+                        containerLeft.tag_add("leftColor", str(i+1)+"."+str(k))
+                        containerLeft.tag_config("leftColor", foreground='green')
 
     else:
         messagebox.showinfo('Title', "One of the fields is blank")
